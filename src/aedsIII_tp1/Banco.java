@@ -18,17 +18,13 @@
 
 package aedsIII_tp1;
 
-import java.util.ArrayList;
-
 public class Banco {
 	
 	String path;
-	ArrayList<ContaBancaria> contas;
 	
 	public Banco(String path) 
 	{
 		this.path = path;
-		contas = new ArrayList<ContaBancaria>();
 	}
 	
 	public void CriarConta(String nomePessoa, String cpf, String estado) 

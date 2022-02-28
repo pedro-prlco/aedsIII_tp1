@@ -23,7 +23,7 @@ public class Main {
 			System.out.println("\t6) Sair");
 
 			System.out.print("Digite a opcao desejada: ");
-			opcaoEscolhida = scan.nextInt();
+			opcaoEscolhida = Integer.parseInt(scan.nextLine());
 			System.out.print("\n------------------------------------------------------------------\n");
 
 			switch (opcaoEscolhida){
@@ -31,13 +31,13 @@ public class Main {
 				// Criar conta
 				case 1:
 					System.out.print("\nDigite o nome: ");
-					nomePessoa = scan.next();
+					nomePessoa = scan.nextLine();
 			
 					System.out.print("\nDigite o cpf: ");
-					cpf = scan.next();
+					cpf = scan.nextLine();
 			
 					System.out.print("\nDigite o estado: ");
-					estado = scan.next();
+					estado = scan.nextLine();
 
 					/* banco.criar(nomePessoa, cpf, estado); */
 
@@ -58,13 +58,13 @@ public class Main {
 					id1 = scan.nextInt();
 					
 					System.out.print("\nDigite o nome: ");
-					nomePessoa = scan.next();
+					nomePessoa = scan.nextLine();
 			
 					System.out.print("\nDigite o cpf: ");
-					cpf = scan.next();
+					cpf = scan.nextLine();
 			
 					System.out.print("\nDigite o estado: ");
-					estado = scan.next();
+					estado = scan.nextLine();
 
 					/* banco.atualizar(id1, nome, cpf, estado); */
 
