@@ -11,7 +11,7 @@ public class ContaBancaria {
 	public int saldoConta;
 	public boolean isDead;
 	
-	//Instancia de um nPovo objeto de ContaBancaria
+	//Instancia de um novo objeto de ContaBancaria
 	public ContaBancaria(int idConta, String nome, String cpf, String cidade) 
 	{
 		this.idConta = idConta;
@@ -23,6 +23,7 @@ public class ContaBancaria {
 		isDead = false;
 	}
 	
+	//Retorna todos os dados do usuario em uma string. Ingnorando os valores inteiros saldoConta e transferenciasRealizadas
 	public String toString() 
 	{
 		String dados =  nomePessoa + ";" + cpf + ";"+ cidade;
@@ -31,21 +32,25 @@ public class ContaBancaria {
 		return  dados;
 	}
 	
+	//Retorna o tamnho em bytes deste objeto
 	public int ByteLength()
 	{
 		return toString().getBytes().length;
 	}
 	
+	//Converte este objeto em uma sequencia de bytes
 	public byte[] toByteArray() 
 	{
 		return toString().getBytes();
 	}
 	
+	//Ativa isDead para true. Na hora de registrar no arquivo, a lipide sera marcada com *
 	public void Kill() 
 	{
 		isDead = true;
 	}
 	
+	//Converte uma string em uma nova ContaBancaria.
 	public static ContaBancaria Parse(String data) 
 	{
 		String[] splittedData = data.split(";");

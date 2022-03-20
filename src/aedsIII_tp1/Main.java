@@ -1,3 +1,9 @@
+//OS COMANDOS RODAM NA CLASSE MAIN.
+//O PROGRAMA APRESENTA UMA CLASSE ContaBancaria, ESTA CLASSE REPRESENTA O REGISTRO NO ARQUIVO
+//PARA CADA OPERACAO REALIZADA NO REGISTRO, ANTES E RETORNADA UMA INSTANCIA DESTA CLASSE PARA QUE SEUS VALORES POSSAM
+//SER ALTERADOS, E DEPOIS, NO MESMO FRAME DE EXECUCAO A INSTANCIA E SOBRESCRITA OU CRIADA NO REGISTRO.
+//A CLASSE BANCO E RESPONSAVEL POR EFETUAR COMANDOS DE LEITURA E ESCRITURA DE DADOS NO ARQUIVO
+
 package aedsIII_tp1;
 import java.io.IOException;
 import java.util.Scanner;
@@ -13,7 +19,13 @@ public class Main {
 		int id1, id2, id3;
 		String nomePessoa, cpf, estado;
 		
+		
+		//Inicializando Banco.
+		//Uma path e passada como parametro para definir qual arquivo o processo de leitura e escritura
+		//sera realizada.
 		Banco banco = new Banco("teste.txt");
+		
+		
 		
 		//do-while que ira rodar enquanto a opcao escolhida nao for igual a 6
 		do{

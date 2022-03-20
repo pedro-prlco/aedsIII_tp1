@@ -78,23 +78,23 @@ public class Banco {
 		//Primeiro escrever no arquivo a id da conta
 		WriteInt(id, (int)file.length());
 		
-		//Depois escrever no arquivo o tamanho do registro em bytes + 8 bytes que são dos valores inteiros - Saldo e transferencias
+		//Depois escrever no arquivo o tamanho do registro em bytes + 8 bytes que são dos valores inteiros: Saldo e transferencias
 		WriteByte(novaConta.toString().length()+8, (int)file.length());
 		
-		//Escrevendo no arquivo os dados não inteiros da nova conta.
+		//Escrevendo no arquivo os dados não inteiros da nova conta: Lapide, Nome, CPF e Cidade.
 		Write(contaBytes, contaBytes.length, (int)file.length());
 		
 		//Por fim, registrando os dados inteiros da nova conta.
 		WriteInt(novaConta.saldoConta, (int)file.length());
 		WriteInt(novaConta.transferenciasRealizadas, (int)file.length());
 		
-		//Att a header - Alterando a quantidade de elementos registrado	s
+		//Alterando o valor do contador de elementos registrados
 		AttHeader(++id);
 		
 		
-		//OBS: Foi decidido registrar os valores inteiros separadamente pois estavamos tendo dificuldade de incluir os 4 bytes
-		//de cada inteiro nesta array de bytes que contem os valores nao inteiros da conta. Um registro final fica:
-		//[id][tamanho em bytes][lapide][nome + cpf + estado][saldo e transferencias realizadas]
+		//Estrutura do registro
+		//[4 bytes]   [4 bytes]    [     1 byte     ]   [1 byte]      [     variavel      ]   [            8 bytes              ]
+		//[HEADER ]   [id     ]    [tamanho em bytes]   [lapide]      [nome + cpf + estado]   [saldo e transferencias realizadas]
 		
 	}
 	
@@ -162,18 +162,25 @@ public class Banco {
 			}
 		}
 		
+		//Se nao for encontrado nenhuma conta entao retorne nulo
 		return null;
 	}
 	
+	//Funcao responsavel por desativar a conta.
 	public void DeactivateAccount(int id) throws IOException 
 	{
+		//Le os dados da conta que deseja desativar
 		ContaBancaria conta = ReadAccount(id);
+		//A conta entao e desativada atraves da funcao Kill(), alterando sua lapide
 		conta.Kill();
+		//Por fim, conta e sobrescrita no arquivo com esse novo valor de sua lapide
 		OverwriteAccount(id, conta.nomePessoa, conta.cpf, conta.cidade, conta.saldoConta, conta.transferenciasRealizadas, conta.isDead);
 	}
 	
+	//Funcao responsavel por retornar a posicao do ponteiro sobre uma conta atraves de sua ID
 	public int GetPointerPositionByAccountId(int id) throws IOException 
 	{
+		
 		file.seek(4);
 		while(file.getFilePointer() < file.length()) 
 		{
@@ -196,6 +203,7 @@ public class Banco {
 		return -1;
 	}
 	
+	//Fecha o RandomAccess file
 	public void Close() throws IOException 
 	{
 		file.close();
@@ -237,21 +245,34 @@ public class Banco {
 		WriteInt(conta.transferenciasRealizadas, (int)file.getFilePointer());
 	}
 	
-	int ReadInt(int startPos) throws IOException 
+	//Funcao responsavel ler um inteiro registrado no arquivo.
+	//Esta funcao recebe um inteiro como parametro que indica a posicao inicial de leitura do ponteiro
+	int ReadInt(int number) throws IOException 
 	{
-		return java.nio.ByteBuffer.wrap(Read(startPos, 4)).getInt();
+		//retorna os bytes lidos no arquivo convertivos como inteiro. Seguindo os passos
+		//1. Le 4 bytes registrados no arquivo atraves da funcao read.
+		//2. java.nio.ByteBuffer.wrap().getInt() => serve para converter os 4 bytes lidos pela funcao Read em inteiro.
+		return java.nio.ByteBuffer.wrap(Read(number, 4)).getInt();
 	}
 	
+	
+	//Funcao responsavel por ler a heade presente no arquivo.
+	//Ele apenas retorna um valor inteiro retornada pela funcao ReadInt definida acima
 	int ReadHeader() throws IOException 
 	{
 		return ReadInt(0);
 	}
 	
+	//Funcao responsavel por atualizar o valor da Header 
+	//para "novoValor"
 	void AttHeader(int novoValor) throws IOException 
 	{
+		//Funcao chamada que serve para escrever um inteiro no arquivo
 		WriteInt(novoValor, 0);
 	}
 	
+	//Funcao base de leitura no arquivo. Nele recebe uma posicao inicial de leitura e o tamanho em bytes que o ponteiro devera andar para realizar
+	//esta leitura.
 	byte[] Read(int startPos, int size) throws IOException 
 	{
 		file.seek(startPos);
@@ -260,26 +281,39 @@ public class Banco {
 		return readData;
 	}
 	
+	//Funcao base de leitura no arquivo. Diferentemente da funcao Read acima, este serve apenas para ler um byte no registro.
 	byte ReadByte() throws IOException 
 	{
 		return file.readByte();
 	}
 	
+	//Funcao responsavel por escrever um inteiro no arquivo.
+	//Ele recebe dois parametros.
+	//value => valor inteiro que deseja ser escrito no arquivo
+	//l => posicao inicial do pointeiro na hora de efetuar a escritura
 	void WriteInt(int value, int l) throws IOException 
 	{
+		//Antes de efetuar a escritura, e feita uma conversao do numero inteiro em seus respectivos 4 bytes.
 		byte[] data = java.nio.ByteBuffer.allocate(4).putInt(value).array();
+		//Depois de coletar os bytes do inteiro. Utiliza-se a funcao Write
 		Write(data, 4, l);
 	}
 	
-	void WriteByte(int value, int position) throws IOException 
-	{
-		file.seek(position);
-		file.writeByte(value);
-	}
-	
+	//Funcao responsavel por escrever uma sequencia de bytes no arquivo
+	//value => Os dados que irao ser escritos no arquivo
+	//size => tamanho dos dados em bytes que serao escritos no arquivo
+	//position => posicao inicial do ponteiro na hora de escrever no arquivo
 	void Write(byte[] value, int size, int position) throws IOException 
 	{
 		file.seek(position);
 		file.write(value, 0, size);
 	}
+	
+	//Funcao responsavel por escrever apenas um byte no arquivo
+	void WriteByte(int value, int position) throws IOException 
+	{
+		file.seek(position);
+		file.writeByte(value);
+	}
+
 }
